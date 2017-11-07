@@ -1,10 +1,9 @@
 import java.io.File
 import java.util.*
-import java.util.*
-import javax.mail.*
-import javax.mail.internet.*
-
-
+import javax.mail.Message
+import javax.mail.Session
+import javax.mail.internet.InternetAddress
+import javax.mail.internet.MimeMessage
 
 data class Participant(val name: String, val email: String)
 
@@ -12,11 +11,8 @@ fun ArrayList<Participant>.pick(picker: Participant) : Participant {
     if (this.isEmpty()) {
         throw IllegalStateException("pot is empty")
     }
-    if (this.size == 1 && this[0] == picker) {
-        return this[0]
-    }
     Collections.shuffle(this)
-    while (this[0] == picker) {
+    while (this[0] == picker && this.size > 1) {
         Collections.shuffle(this)
     }
     return this.removeAt(0)
@@ -32,12 +28,14 @@ fun draw(participants: List<Participant>) : Iterable<Pair<Participant, Participa
   arg 0: location of participants csv file with name,email pairs
   arg 1: year
   arg 2: from gmail address
-  arg 3: gmail username
-  arg 4: gmail password
+  arg 3: gmail password
  */
 
 fun main(args: Array<String>) {
-    val partcipantsCsvFile = args[0]; val year = args[1]; val from = args[2]; val username = args[3]; val password = args[4]
+    val partcipantsCsvFile = args[0]
+    val year = args[1]
+    val from = args[2]
+    val password = args[3]
     val participants = File(partcipantsCsvFile).readLines().filter { line -> !line.isBlank() }.map { line -> Participant(line.split(",")[0], line.split(",")[1]) }
     var draw = draw(participants)
     while (draw.last().first == draw.last().second) {
@@ -45,11 +43,12 @@ fun main(args: Array<String>) {
     }
     for ((giver, receiver) in draw) {
         println("$giver is giving to $receiver".format(giver, receiver))
-        sendEmail(from, giver.email, "Secret Santa $year", "Hi $giver, this year you should buy a gift for $receiver.  This is an automated email and I have no knowledge of its contents", username, password)
+        sendEmail(from, giver, "Secret Santa $year", "Hi ${giver.name}, this year you should buy a gift for ${receiver.name}.  This is an automated email and I have no knowledge of its contents", password)
     }
 }
 
-fun sendEmail(from: String, to: String, subject: String, body: String, user: String, password: String) {
+fun sendEmail(from: String, to: Participant, subject: String, body: String, password: String) {
+    println("Sending an email to ${to.name} (${to.email})")
     val props = Properties()
     props.put("mail.smtp.auth", "true")
     props.put("mail.smtp.starttls.enable", "true")
@@ -58,7 +57,7 @@ fun sendEmail(from: String, to: String, subject: String, body: String, user: Str
     val session = Session.getInstance(props, null)
     val message = MimeMessage(session)
     message.setFrom(InternetAddress(from))
-    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to))
+    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to.email))
     message.setSubject(subject)
     message.setText(body)
     val transport = session.getTransport("smtp")
