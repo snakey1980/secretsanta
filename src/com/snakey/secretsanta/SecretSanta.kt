@@ -9,7 +9,7 @@ import javax.mail.internet.MimeMessage
 class SecretSanta {
 
     internal fun drawAndSendEmails(year: String, from: String, password: String, participants: List<Pair<String, String>>) {
-        if (participants.size < 4) {
+        if (participants.size < 3) {
             throw IllegalArgumentException("Not enough participants (must have at least four)")
         }
         val draw = draw(participants.map { p -> Participant(p.first, p.second) })
@@ -22,7 +22,7 @@ class SecretSanta {
 
     internal fun draw(participants: List<Participant>) : List<Pair<Participant, Participant>> {
         class OnlyOneLeftIsPickerException(val participant: Participant) : RuntimeException()
-        fun ArrayList<Participant>.pick(picker: Participant) : Participant {
+        fun MutableList<Participant>.pick(picker: Participant) : Participant {
             if (this.isEmpty()) {
                 throw IllegalStateException("pot is empty")
             }
@@ -36,13 +36,20 @@ class SecretSanta {
         }
         while (true) {
             try {
-                val pot = ArrayList(participants)
-                return participants.map { participant -> Pair(participant, pot.pick(participant)) }
+                val pot: MutableList<Participant> = randomOrder(participants)
+                val line: List<Participant> = randomOrder(participants)
+                return line.map { participant -> Pair(participant, pot.pick(participant)) }
             }
             catch (e: OnlyOneLeftIsPickerException) {
-                println("Drawing again because ${e.participant.name} was the last picker and the last name in the pot")
+                // println("Drawing again because ${e.participant.name} was the last picker and the last name in the pot")
             }
         }
+    }
+
+    private fun randomOrder(participants: List<Participant>): MutableList<Participant> {
+        val result = ArrayList(participants)
+        Collections.shuffle(result)
+        return result;
     }
 
     private fun sendEmail(from: String, to: Participant, subject: String, body: String, password: String) {

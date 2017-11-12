@@ -32,6 +32,39 @@ internal class SecretSantaTest {
         println(cycleCounts)
     }
 
+    @Test
+    fun cycleStats2() {
+        val numParticipants = 3
+        val numTrials = 10000
+        val secretSanta = SecretSanta()
+        val participants = testParticipants(numParticipants)
+        val patternCounts = mutableMapOf<List<List<String>>, Int>()
+        for (i in 1..numTrials) {
+            val pattern = describeCycles(secretSanta.draw(participants))
+            patternCounts.putIfAbsent(pattern, 0)
+            patternCounts[pattern] = patternCounts[pattern]!! + 1;
+        }
+        println(patternCounts)
+    }
+
+    @Test
+    fun cycleStats3() {
+        val numParticipants = 4
+        val numTrials = 100000
+        val secretSanta = SecretSanta()
+        val participants = testParticipants(numParticipants)
+        val patternCounts = mutableMapOf<List<List<String>>, Int>()
+        for (i in 1..numTrials) {
+            var pattern : List<List<String>>
+            do {
+                pattern = describeCycles(secretSanta.draw(participants))
+            } while (pattern.size > 1)
+            patternCounts.putIfAbsent(pattern, 0)
+            patternCounts[pattern] = patternCounts[pattern]!! + 1
+        }
+        println(patternCounts)
+    }
+
     fun describeCycles(draw: List<Pair<SecretSanta.Participant, SecretSanta.Participant>>): List<List<String>> {
         val seen: MutableSet<SecretSanta.Participant> = mutableSetOf()
         val result: MutableList<List<SecretSanta.Participant>> = mutableListOf()
