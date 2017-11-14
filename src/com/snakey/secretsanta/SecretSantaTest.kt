@@ -34,8 +34,8 @@ internal class SecretSantaTest {
 
     @Test
     fun cycleStats2() {
-        val numParticipants = 3
-        val numTrials = 10000
+        val numParticipants = 4
+        val numTrials = 1000000
         val secretSanta = SecretSanta()
         val participants = testParticipants(numParticipants)
         val patternCounts = mutableMapOf<List<List<String>>, Int>()

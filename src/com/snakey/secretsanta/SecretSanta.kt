@@ -9,7 +9,7 @@ import javax.mail.internet.MimeMessage
 class SecretSanta {
 
     internal fun drawAndSendEmails(year: String, from: String, password: String, participants: List<Pair<String, String>>) {
-        if (participants.size < 3) {
+        if (participants.size < 4) {
             throw IllegalArgumentException("Not enough participants (must have at least four)")
         }
         val draw = draw(participants.map { p -> Participant(p.first, p.second) })
@@ -21,35 +21,28 @@ class SecretSanta {
     internal data class Participant(val name: String, val email: String)
 
     internal fun draw(participants: List<Participant>) : List<Pair<Participant, Participant>> {
-        class OnlyOneLeftIsPickerException(val participant: Participant) : RuntimeException()
+        class PickedSelfException(val participant: Participant) : RuntimeException()
         fun MutableList<Participant>.pick(picker: Participant) : Participant {
             if (this.isEmpty()) {
                 throw IllegalStateException("pot is empty")
             }
-            if (size == 1 && get(0) == picker) {
-                throw OnlyOneLeftIsPickerException(picker)
+            if (get(0) == picker) {
+                throw PickedSelfException(picker)
             }
-            do {
-                Collections.shuffle(this)
-            } while (get(0) == picker)
-            return removeAt(0)
+            else {
+                return removeAt(0)
+            }
         }
         while (true) {
             try {
-                val pot: MutableList<Participant> = randomOrder(participants)
-                val line: List<Participant> = randomOrder(participants)
-                return line.map { participant -> Pair(participant, pot.pick(participant)) }
+                val pot: MutableList<Participant> = participants.toMutableList()
+                Collections.shuffle(pot)
+                return participants.map { participant -> Pair(participant, pot.pick(participant)) }
             }
-            catch (e: OnlyOneLeftIsPickerException) {
-                // println("Drawing again because ${e.participant.name} was the last picker and the last name in the pot")
+            catch (e: PickedSelfException) {
+                // println("Drawing again because ${e.participant.name} picked his or herself")
             }
         }
-    }
-
-    private fun randomOrder(participants: List<Participant>): MutableList<Participant> {
-        val result = ArrayList(participants)
-        Collections.shuffle(result)
-        return result;
     }
 
     private fun sendEmail(from: String, to: Participant, subject: String, body: String, password: String) {
