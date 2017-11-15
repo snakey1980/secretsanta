@@ -10,14 +10,14 @@ class SecretSanta {
     fun draw(n: Int) : List<Pair<Int, Int>> {
         if (n < 4) throw IllegalArgumentException()
         val players = (1..n).toSet()
-        val pot = players.toMutableList()
-        Collections.shuffle(pot)
+        val hat = players.toMutableList()
+        Collections.shuffle(hat)
         val result = mutableListOf<Pair<Int, Int>>()
         players.forEach {
-            while (pot[0] == it) {
-                Collections.shuffle(pot)
+            while (hat[0] == it) {
+                Collections.shuffle(hat)
             }
-            result.add(Pair(it, pot.removeAt(0)))
+            result.add(Pair(it, hat.removeAt(0)))
         }
         return result
     }
@@ -25,24 +25,24 @@ class SecretSanta {
     fun draw2(n: Int) : List<Pair<Int, Int>> {
         if (n < 4) throw IllegalArgumentException()
         val players = (1..n).toSet()
-        class BadPotException : RuntimeException()
+        class BadHatException : RuntimeException()
         while (true) {
-            val pot = players.toMutableList()
-            Collections.shuffle(pot)
+            val hat = players.toMutableList()
+            Collections.shuffle(hat)
             try {
                 val result = mutableListOf<Pair<Int, Int>>()
                 players.forEach {
-                    if (pot.size == 1 && pot[0] == it) {
-                        throw BadPotException()
+                    if (hat.size == 1 && hat[0] == it) {
+                        throw BadHatException()
                     }
-                    while (pot[0] == it) {
-                        Collections.shuffle(pot)
+                    while (hat[0] == it) {
+                        Collections.shuffle(hat)
                     }
-                    result.add(Pair(it, pot.removeAt(0)))
+                    result.add(Pair(it, hat.removeAt(0)))
                 }
                 return result
             }
-            catch (e: BadPotException) {
+            catch (e: BadHatException) {
                 // ok, try again
             }
         }
@@ -51,21 +51,21 @@ class SecretSanta {
     fun draw3(n: Int) : List<Pair<Int, Int>> {
         if (n < 4) throw IllegalArgumentException()
         val players = (1..n).toSet()
-        class BadPotException : RuntimeException()
+        class BadHatException : RuntimeException()
         while (true) {
-            val pot = players.toMutableList()
-            Collections.shuffle(pot)
+            val hat = players.toMutableList()
+            Collections.shuffle(hat)
             try {
                 val result = mutableListOf<Pair<Int, Int>>()
                 players.forEach {
-                    if (pot[0] == it) {
-                        throw BadPotException()
+                    if (hat[0] == it) {
+                        throw BadHatException()
                     }
-                    result.add(Pair(it, pot.removeAt(0)))
+                    result.add(Pair(it, hat.removeAt(0)))
                 }
                 return result
             }
-            catch (e: BadPotException) {
+            catch (e: BadHatException) {
                 // ok, try again
             }
         }
