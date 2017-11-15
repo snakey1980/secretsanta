@@ -2,7 +2,6 @@ package com.snakey.secretsanta.donotuse
 
 import org.junit.jupiter.api.Test
 import org.apache.commons.collections4.iterators.PermutationIterator
-import java.text.DecimalFormat
 import java.util.*
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
@@ -129,9 +128,28 @@ internal class SecretSantaTest {
         return result
     }
 
+    private fun describecomponents(pairs: List<Pair<Int, Int>>) : List<Int> {
+        val visited = mutableSetOf<Int>()
+        var result = mutableListOf<Int>()
+        while (visited.size < pairs.size) {
+            var size = 0
+            var node = pairs.find { it.first !in visited }!!.first
+            while (node !in visited) {
+                visited.add(node)
+                ++size
+                node = pairs[node - 1].second
+            }
+            result.add(size)
+        }
+        return result.sorted()
+    }
+
     @Test
     fun testCountComponents() {
         println(countcomponents(listOf(Pair(1, 2), Pair(2, 1), Pair(3, 4), Pair(4, 5), Pair(5, 3), Pair(6, 7), Pair(7, 8), Pair(8, 9), Pair(9, 6))))
+        println(describecomponents(listOf(Pair(1, 2), Pair(2, 1), Pair(3, 4), Pair(4, 5), Pair(5, 3), Pair(6, 7), Pair(7, 8), Pair(8, 9), Pair(9, 6))))
+        println(describecomponents(listOf(Pair(1, 2), Pair(2, 1))))
+        println(describecomponents(listOf(Pair(1, 2), Pair(2, 1), Pair(3, 4), Pair(4, 3))))
     }
 
     @Test
@@ -147,6 +165,21 @@ internal class SecretSantaTest {
             val ratio = String.format("%1.6f", count / n.toDouble())
             val nformatted = String.format("%,d", n)
             println("Found $padcount instances of $component components out of $nformatted total (ratio $ratio)")
+        }
+    }
+
+    @Test
+    fun componentPatterns2() {
+        val counts = mutableMapOf<List<Int>, Int>()
+        val n = 10_000_000
+        for (i in (1..n)) {
+            val components = describecomponents(SecretSanta().draw4(16))
+            counts[components] = counts.getOrDefault(components, 0) + 1
+        }
+        for ((component, count) in counts.map { it }.sortedBy { it.value }) {
+            val padcount = String.format("%1\$7s", count)
+            val ratio = String.format("%1.6f", count / n.toDouble())
+            println("$padcount instances of $component components (ratio $ratio)")
         }
     }
 
