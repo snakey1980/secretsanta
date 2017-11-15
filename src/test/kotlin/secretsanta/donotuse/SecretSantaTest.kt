@@ -1,11 +1,13 @@
 package com.snakey.secretsanta.donotuse
 
-import org.junit.jupiter.api.Test
 import org.apache.commons.collections4.iterators.PermutationIterator
+import org.junit.Ignore
+import org.junit.Test
 import java.util.*
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
 
+@Ignore
 internal class SecretSantaTest {
 
     @Test

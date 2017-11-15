@@ -1,6 +1,5 @@
 package com.snakey.secretsanta.donotuse
 
-import com.snakey.secretsanta.SecretSanta
 import java.util.*
 
 /*

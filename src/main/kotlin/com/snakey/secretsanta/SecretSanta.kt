@@ -21,28 +21,11 @@ class SecretSanta {
     internal data class Participant(val name: String, val email: String)
 
     internal fun draw(participants: List<Participant>) : List<Pair<Participant, Participant>> {
-        class PickedSelfException(val participant: Participant) : RuntimeException()
-        fun MutableList<Participant>.pick(picker: Participant) : Participant {
-            if (this.isEmpty()) {
-                throw IllegalStateException("pot is empty")
-            }
-            if (get(0) == picker) {
-                throw PickedSelfException(picker)
-            }
-            else {
-                return removeAt(0)
-            }
-        }
-        while (true) {
-            try {
-                val pot: MutableList<Participant> = participants.toMutableList()
-                Collections.shuffle(pot)
-                return participants.map { participant -> Pair(participant, pot.pick(participant)) }
-            }
-            catch (e: PickedSelfException) {
-                // println("Drawing again because ${e.participant.name} picked his or herself")
-            }
-        }
+        if (participants.size < 4) throw IllegalArgumentException()
+        val permutation = participants.toMutableList()
+        do Collections.shuffle(permutation)
+        while ((0 until participants.size).any { participants[it] == permutation[it] })
+        return (0 until participants.size).map { Pair(participants[it], permutation[it]) }
     }
 
     private fun sendEmail(from: String, to: Participant, subject: String, body: String, password: String) {

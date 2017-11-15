@@ -1,7 +1,7 @@
 package com.snakey.secretsanta
 
-import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
+import org.junit.*
+import org.junit.Assert.assertEquals
 
 internal class SecretSantaTest {
 
