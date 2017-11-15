@@ -2,6 +2,7 @@ package com.snakey.secretsanta.donotuse
 
 import org.junit.jupiter.api.Test
 import org.apache.commons.collections4.iterators.PermutationIterator
+import java.text.DecimalFormat
 import java.util.*
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
@@ -108,15 +109,44 @@ internal class SecretSantaTest {
     fun countDerangements() {
         for (i in (4..11)) {
             val count = generatePermutations((0 until i).toList())
-                    .filter { perm -> perm.none { perm.indexOf(it) == it } }.count()
+                    .filter { perm -> (0 until i).none { perm[it] == it } }.count()
             println("Found $count derangements of $i elements")
         }
     }
 
+    private fun countcomponents(pairs: List<Pair<Int, Int>>) : Int {
+        val visited = mutableSetOf<Int>()
+        var result = 0
+        while (visited.size < pairs.size) {
+            val start = pairs.find { it.first !in visited }!!.first
+            var node = start
+            while (node !in visited) {
+                visited.add(node)
+                node = pairs[node - 1].second
+            }
+            ++result
+        }
+        return result
+    }
+
+    @Test
+    fun testCountComponents() {
+        println(countcomponents(listOf(Pair(1, 2), Pair(2, 1), Pair(3, 4), Pair(4, 5), Pair(5, 3), Pair(6, 7), Pair(7, 8), Pair(8, 9), Pair(9, 6))))
+    }
+
     @Test
     fun componentPatterns() {
-        for (i in (1..1_000_000)) {
-            
+        val counts = mutableMapOf<Int, Int>()
+        val n = 10_000_000
+        for (i in (1..n)) {
+            val components = countcomponents(SecretSanta().draw4(16))
+            counts[components] = counts.getOrDefault(components, 0) + 1
+        }
+        for ((component, count) in counts.map { it }.sortedBy { it.value }) {
+            val padcount = String.format("%1\$7s", count)
+            val ratio = String.format("%1.6f", count / n.toDouble())
+            val nformatted = String.format("%,d", n)
+            println("Found $padcount instances of $component components out of $nformatted total (ratio $ratio)")
         }
     }
 
