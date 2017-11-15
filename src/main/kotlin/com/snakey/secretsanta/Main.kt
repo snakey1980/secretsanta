@@ -16,5 +16,4 @@ fun main(args: Array<String>) {
     val password = args[3]
     val participants = File(partcipantsCsvFile).readLines().filter { line -> !line.isBlank() }.map { line -> Pair(line.split(",")[0], line.split(",")[1]) }
     SecretSanta().drawAndSendEmails(year, from, password, participants)
-
 }
