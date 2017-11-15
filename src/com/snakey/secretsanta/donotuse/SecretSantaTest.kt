@@ -183,4 +183,11 @@ internal class SecretSantaTest {
         }
     }
 
+    @Test
+    fun bignumber() {
+        println(Long.MAX_VALUE)
+        println(15L * 14L * 13L * 12L * 11L * 10L * 9L * 8L * 7L * 6L * 5L * 4L * 3L * 2L * 1L)
+        println(String.format("%1.6f", 1307674368000.0 / 7697064251745.0))
+    }
+
 }
