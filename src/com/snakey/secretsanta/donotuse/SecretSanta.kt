@@ -8,8 +8,9 @@ Bad and buggy implementations of Secret Santa preserved here for posterity
  */
 class SecretSanta {
 
-    fun draw(players: Set<Int>) : List<Pair<Int, Int>> {
-        if (players.size < 4) throw IllegalArgumentException()
+    fun draw(n: Int) : List<Pair<Int, Int>> {
+        if (n < 4) throw IllegalArgumentException()
+        val players = (1..n).toSet()
         val pot = players.toMutableList()
         Collections.shuffle(pot)
         val result = mutableListOf<Pair<Int, Int>>()
@@ -22,9 +23,10 @@ class SecretSanta {
         return result
     }
 
-    fun draw2(players: Set<Int>) : List<Pair<Int, Int>> {
+    fun draw2(n: Int) : List<Pair<Int, Int>> {
+        if (n < 4) throw IllegalArgumentException()
+        val players = (1..n).toSet()
         class BadPotException : RuntimeException()
-        if (players.size < 4) throw IllegalArgumentException()
         while (true) {
             val pot = players.toMutableList()
             Collections.shuffle(pot)
@@ -47,9 +49,10 @@ class SecretSanta {
         }
     }
 
-    fun draw3(players: Set<Int>) : List<Pair<Int, Int>> {
+    fun draw3(n: Int) : List<Pair<Int, Int>> {
+        if (n < 4) throw IllegalArgumentException()
+        val players = (1..n).toSet()
         class BadPotException : RuntimeException()
-        if (players.size < 4) throw IllegalArgumentException()
         while (true) {
             val pot = players.toMutableList()
             Collections.shuffle(pot)
@@ -69,16 +72,18 @@ class SecretSanta {
         }
     }
 
-    fun draw4(players: Set<Int>) : List<Pair<Int, Int>> {
-        if (players.size < 4) throw IllegalArgumentException()
+    fun draw4(n: Int) : List<Pair<Int, Int>> {
+        if (n < 4) throw IllegalArgumentException()
+        val players = (1..n).toSet()
         val permutation = players.toMutableList()
         do Collections.shuffle(permutation)
             while (players.any { it == permutation[it - 1] })
         return players.map { Pair(it, permutation[it - 1]) }
     }
 
-    fun draw4CountShuffles(players: Set<Int>) : Pair<Int, List<Pair<Int, Int>>> {
-        if (players.size < 4) throw IllegalArgumentException()
+    fun draw4CountShuffles(n: Int) : Pair<Int, List<Pair<Int, Int>>> {
+        if (n < 4) throw IllegalArgumentException()
+        val players = (1..n).toSet()
         val permutation = players.toMutableList()
         var shuffles = 0
         do {
