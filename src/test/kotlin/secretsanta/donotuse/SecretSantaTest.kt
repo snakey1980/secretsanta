@@ -4,6 +4,7 @@ import org.apache.commons.collections4.iterators.PermutationIterator
 import org.junit.Ignore
 import org.junit.Test
 import java.util.*
+import java.util.stream.Collectors
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
 
@@ -193,6 +194,12 @@ internal class SecretSantaTest {
     }
 
     @Test
+    fun bignumber2() {
+        println(Long.MAX_VALUE)
+        println(String.format("%1.9f", 2027025.0 / 7697064251745.0 * 10_000_000))
+    }
+
+    @Test
     fun testDraw5() {
         println(SecretSanta().draw5(4))
     }
@@ -222,6 +229,55 @@ internal class SecretSantaTest {
             patterns[pattern] = patterns.getOrDefault(pattern, 0) + 1
         }
         patterns.entries.sortedByDescending { it.value }.forEach { println(it) }
+    }
+
+    private fun generatePermutations(n: Int) : Stream<List<Int>> {
+        return StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(PermutationIterator((0 until n).toList()), Spliterator.ORDERED),
+                false)
+    }
+
+    private fun generatePairyPermutations(n: Int) : Stream<List<Int>> {
+        return generatePermutations(n).filter {
+            it.none { element -> it[element] == element }
+        }.filter{
+          it.all { i ->
+              it[it[i]] == i
+          }
+        }
+    }
+
+    @Test
+    fun pairs() {
+        println(generatePairyPermutations(4).count())
+        println(generatePairyPermutations(6).count())
+        println(generatePairyPermutations(8).count())
+        println(generatePairyPermutations(10).count())
+//        println(countAllPairwisePermutations(4))
+//        println(countAllPairwisePermutations(6))
+        println(countPairedPermutations(4))
+        println(countPairedPermutations(6))
+        println(countPairedPermutations(8))
+        println(countPairedPermutations(10))
+        println(countPairedPermutations(12))
+        println(countPairedPermutations(14))
+        println(countPairedPermutations(16))
+
+        for (i in 4..16 step 2) {
+            println("$i -> ${countPairedPermutations(i)}")
+        }
+    }
+
+    fun countPairedPermutations(n: Int) : Int {
+        if (n < 4 || (n % 2) != 0) {
+            throw IllegalArgumentException()
+        }
+        if (n == 4) {
+            return 3
+        }
+        else {
+            return (n - 1) * (countPairedPermutations(n - 2))
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package com.snakey.secretsanta.donotuse
 
+import org.junit.Test
 import java.util.*
 
 /*
@@ -118,7 +119,5 @@ class SecretSanta {
         }
         return list
     }
-
-
 
 }
