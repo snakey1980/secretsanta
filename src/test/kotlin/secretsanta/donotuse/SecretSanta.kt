@@ -9,7 +9,7 @@ class SecretSanta {
 
     fun draw(n: Int) : List<Pair<Int, Int>> {
         if (n < 4) throw IllegalArgumentException()
-        val players = (1..n).toSet()
+        val players = (1..n)
         val hat = players.toMutableList()
         Collections.shuffle(hat)
         val result = mutableListOf<Pair<Int, Int>>()
@@ -24,7 +24,7 @@ class SecretSanta {
 
     fun draw2(n: Int) : List<Pair<Int, Int>> {
         if (n < 4) throw IllegalArgumentException()
-        val players = (1..n).toSet()
+        val players = (1..n)
         class BadHatException : RuntimeException()
         while (true) {
             val hat = players.toMutableList()
@@ -50,7 +50,7 @@ class SecretSanta {
 
     fun draw3(n: Int) : List<Pair<Int, Int>> {
         if (n < 4) throw IllegalArgumentException()
-        val players = (1..n).toSet()
+        val players = (1..n)
         class BadHatException : RuntimeException()
         while (true) {
             val hat = players.toMutableList()
@@ -73,7 +73,7 @@ class SecretSanta {
 
     fun draw4(n: Int) : List<Pair<Int, Int>> {
         if (n < 4) throw IllegalArgumentException()
-        val players = (1..n).toSet()
+        val players = (1..n)
         val permutation = players.toMutableList()
         do Collections.shuffle(permutation)
             while (players.any { it == permutation[it - 1] })
@@ -82,7 +82,7 @@ class SecretSanta {
 
     fun draw4CountShuffles(n: Int) : Pair<Int, List<Pair<Int, Int>>> {
         if (n < 4) throw IllegalArgumentException()
-        val players = (1..n).toSet()
+        val players = (1..n)
         val permutation = players.toMutableList()
         var shuffles = 0
         do {
@@ -91,6 +91,16 @@ class SecretSanta {
         }
         while (players.any { it == permutation[it - 1] })
         return Pair(shuffles, players.map { Pair(it, permutation[it - 1]) })
+    }
+
+    fun draw5(n: Int) : List<Pair<Int, Int>> {
+        if (n < 4) throw IllegalArgumentException()
+        val players = (1..n)
+        val permutation = players.toMutableList()
+        Collections.shuffle(permutation)
+        return (0 until n).map {
+            Pair(permutation[it], permutation[(it + 1) % n])
+        }
     }
 
 }

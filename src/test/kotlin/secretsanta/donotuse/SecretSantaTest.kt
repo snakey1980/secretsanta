@@ -192,4 +192,9 @@ internal class SecretSantaTest {
         println(String.format("%1.6f", 1307674368000.0 / 7697064251745.0))
     }
 
+    @Test
+    fun testDraw5() {
+        println(SecretSanta().draw5(4))
+    }
+
 }
