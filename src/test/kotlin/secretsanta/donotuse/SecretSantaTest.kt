@@ -197,4 +197,31 @@ internal class SecretSantaTest {
         println(SecretSanta().draw5(4))
     }
 
+    @Test
+    fun testShuffle() {
+        val random = Random()
+        (1..100).forEach {
+            println(SecretSanta().shuffle(4, random))
+        }
+    }
+
+    @Test
+    fun testSattolo() {
+        val random = Random()
+        (1..100).forEach {
+            println(SecretSanta().sattolo(4, random))
+        }
+    }
+
+    @Test
+    fun testSattoloDist() {
+        val patterns = mutableMapOf<List<Int>, Int>()
+        val random = Random()
+        (1..100_000).forEach {
+            val pattern = SecretSanta().sattolo(4, random)
+            patterns[pattern] = patterns.getOrDefault(pattern, 0) + 1
+        }
+        patterns.entries.sortedByDescending { it.value }.forEach { println(it) }
+    }
+
 }

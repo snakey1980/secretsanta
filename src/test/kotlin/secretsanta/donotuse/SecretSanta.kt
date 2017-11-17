@@ -103,4 +103,22 @@ class SecretSanta {
         }
     }
 
+    fun shuffle(n: Int, random: Random) : List<Int> {
+        val list = (1..n).toMutableList()
+        for (i in list.size downTo 2) {
+            list.set(i - 1, list.set(random.nextInt(i), list[i - 1]))
+        }
+        return list
+    }
+
+    fun sattolo(n: Int, random: Random) : List<Int> {
+        val list = (1..n).toMutableList()
+        for (i in list.size downTo 2) {
+            list.set(i - 1, list.set(random.nextInt(i - 1), list[i - 1]))
+        }
+        return list
+    }
+
+
+
 }
