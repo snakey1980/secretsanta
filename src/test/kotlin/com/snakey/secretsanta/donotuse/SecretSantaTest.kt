@@ -3,8 +3,9 @@ package com.snakey.secretsanta.donotuse
 import org.apache.commons.collections4.iterators.PermutationIterator
 import org.junit.Ignore
 import org.junit.Test
+import java.math.BigDecimal
+import java.math.MathContext
 import java.util.*
-import java.util.stream.Collectors
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
 
@@ -278,6 +279,102 @@ internal class SecretSantaTest {
         else {
             return (n - 1) * (countPairedPermutations(n - 2))
         }
+    }
+
+    fun randomDerangements2(n: Int) : List<Int> {
+        val numDerangments = object {
+            private val calculated = mutableMapOf<Int, BigDecimal>()
+            fun get(n: Int) : BigDecimal =
+                    calculated.getOrPut(n, {
+                        when (n) {
+                            0 -> BigDecimal.ONE
+                            1 -> BigDecimal.ZERO
+                            else -> BigDecimal.valueOf(n.toLong()).minus(BigDecimal.ONE).multiply(get(n - 1).plus(get(n - 2)))
+                        }
+                    })
+        }
+        val random = Random(0)
+        val result = (1..n).toMutableList()
+        val unmarkedIndices = (0 until n).toMutableSet()
+        val marked = (0 until n).map { false }.toMutableList()
+        for (i in n - 1 downTo 0) {
+            if (unmarkedIndices.size < 2) {
+                break
+            }
+            if (!marked[i]) {
+                val target = random.nextInt(unmarkedIndices.size)
+                var j = unmarkedIndices.toList()[target]
+                result[i] = result.set(j, result[i])
+                val probability = random.nextDouble()
+                val threshold =
+                        BigDecimal.valueOf((unmarkedIndices.size - 1).toLong())
+                                .multiply(numDerangments.get(unmarkedIndices.size - 2))
+                                .divide(numDerangments.get(unmarkedIndices.size), MathContext.DECIMAL64).toDouble()
+                if (probability < threshold) {
+                    marked[j] = true
+                    unmarkedIndices.remove(j)
+                }
+                unmarkedIndices.remove(i)
+            }
+        }
+        return result
+    }
+
+    fun randomDerangement(n: Int) : List<Int> {
+        fun numDerangements(n: Int): BigDecimal {
+            return when (n) {
+                0 -> BigDecimal.ONE
+                1 -> BigDecimal.ZERO
+                else -> BigDecimal.valueOf(n.toLong()).minus(BigDecimal.ONE).multiply(numDerangements(n - 1).plus(numDerangements(n - 2)))
+            }
+        }
+        val random = Random(1)
+        val A = (1..n).toMutableList()
+        val marked = (0 until n).map { false }.toBooleanArray()
+        var i = n - 1
+        var u = n
+        while (u >= 2) {
+            println("i = $i")
+            println("marked = ${Arrays.toString(marked)}")
+            if (!marked[i]) {
+                var j = random.nextInt(i)
+                while (marked[j]) {
+                    j = random.nextInt(i)
+                }
+                println("j = $j")
+                A[i] = A.set(j, A[i])
+                val p = random.nextDouble()
+                println("p = $p")
+                val threshold =
+                        BigDecimal.valueOf((u - 1).toLong())
+                        .multiply(numDerangements(u - 2))
+                        .divide(numDerangements(u), MathContext.DECIMAL64).toDouble()
+                println("threshold = $threshold")
+                if (p < threshold) {
+                    marked[j] = true
+                    u--
+                }
+                u--
+            }
+            i--
+        }
+        return A
+    }
+
+    @Test
+    fun crazynewone() {
+//        (4..16).forEach {
+//            println("$it -> ${numDerangements(it)}")
+//        }
+        println(randomDerangement(4))
+
+
+//        val patterns = mutableMapOf<List<Int>, Int>()
+//        (1..100_000).forEach {
+//            val pattern = randomDerangement(4)
+//            patterns[pattern] = patterns.getOrDefault(pattern, 0) + 1
+//        }
+//        patterns.entries.sortedByDescending { it.value }.forEach { println(it) }
     }
 
 }
