@@ -5,6 +5,7 @@ import org.junit.Ignore
 import org.junit.Test
 import java.math.BigDecimal
 import java.math.MathContext
+import java.text.DecimalFormat
 import java.util.*
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
@@ -375,6 +376,35 @@ internal class SecretSantaTest {
 //            patterns[pattern] = patterns.getOrDefault(pattern, 0) + 1
 //        }
 //        patterns.entries.sortedByDescending { it.value }.forEach { println(it) }
+    }
+
+    private fun derangementCount(n: Int) : BigDecimal {
+        return when (n) {
+            0 -> BigDecimal.ONE
+            1 -> BigDecimal.ZERO
+            else -> BigDecimal.valueOf(n.toLong())
+                    .minus(BigDecimal.ONE)
+                    .multiply(
+                            derangementCount(n - 1)
+                                    .plus(derangementCount(n - 2)))
+        }
+    }
+
+    private fun permCount(n: Int) : BigDecimal {
+        return when (n) {
+            0 -> BigDecimal.ONE
+            else -> BigDecimal.valueOf(n.toLong()).multiply(permCount(n - 1))
+        }
+    }
+
+    @Test
+    fun ratios() {
+        (0..20).forEach {
+            val p = permCount(it)
+            val d = derangementCount(it)
+            val r = if (d == BigDecimal.ZERO) "" else DecimalFormat("#.00000").format(p.divide(d, MathContext.DECIMAL64))
+            println("$it         | $p             | $d             | $r")
+        }
     }
 
 }

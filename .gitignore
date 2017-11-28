@@ -5,7 +5,7 @@
 target
 out
 
-participants.csv
+*.csv
 
 # Compiled class file
 *.class

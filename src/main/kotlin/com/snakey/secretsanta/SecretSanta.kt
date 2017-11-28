@@ -14,7 +14,7 @@ class SecretSanta {
         }
         val draw = draw(participants.map { p -> Participant(p.first, p.second) })
         for ((giver, receiver) in draw) {
-                sendEmail(from, giver, "Secret Santa $year", "Hi ${giver.name}, this year you should buy a gift for ${receiver.name}.  This is an automated email and I have no knowledge of its contents", password)
+                sendEmail(from, giver, "Valuations Secret Santa $year", "Hi ${giver.name}, this year you should buy a gift for ${receiver.name}.  This is an automated email and I have no knowledge of its contents", password)
         }
     }
 
